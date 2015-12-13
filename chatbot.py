@@ -4,16 +4,12 @@ from chatapi import *
 import threading
 import shelve
 from twapi import *
+import gen_reply
 
 class Chatbot:
 	tickInterval = 1.0;
 	def __init__(self):
-		if len(sys.argv) > 1:
-			self.debugMode = sys.argv[1];
-		else:
-			self.debugMode = False
-		#
-		self.capi = ChatbotAPI(self.debugMode)
+		self.capi = ChatbotAPI()
 		print "current grade: " + str(self.capi.grade)
 		#	
 		self.localDB = shelve.open('./louDB', writeback=True)
@@ -35,21 +31,26 @@ class Chatbot:
 		self.localDB = shelve.open('./louDB', writeback=True)
 
 	def tick(self):
-
 		self.timer = threading.Timer(self.tickInterval, self.tick);
 		self.timer.start()
 	
-	def convToLouLang(self, chunked):
-		for i in range(0, len(chunked)):
-			if chunked[i] in lou_dict:
-				chunked[i] = lou_dict[chunked[i]],
+	def convToLouLang(self, str):
+		morphs = self.capi.getMorphs(str);
+		text = ""
+		for i in range(1, len(morphs) - 1):
+			if morphs[i]["surface"] in self.louDict:
+				text += self.louDict[morphs[i]["surface"]]
+			else:
+				text += morphs[i]["surface"]
+		return text
 	
 	def receiveMention(self, text, mentionID, userName):
 		print "**** Receive new"
 		print pp(text)
 		print mentionID
 		print userName
-		self.capi.postReply(self.capi.convMorphsToStr(self.capi.generateMarkov()), mentionID, userName)
+		
+		self.capi.postReply(self.convToLouLang(gen_reply.generateReply(text)), mentionID, userName)
 		
 if __name__ == '__main__':
 	loubot = Chatbot()

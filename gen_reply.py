@@ -21,7 +21,7 @@ def generateMarkovReply(replytext):
                         malkovs = capi.generateMarkov(surface=morph[u"surface"], pos=morph[u"pos"])
                         str = ""
                         for mal in malkovs:
-                                str += mal.split(":")[-1].rstrip('"')
+                                str += mal.split(":")[0].rstrip('"')
                         malkovlist.append(str)
         return malkovlist
 
@@ -33,6 +33,7 @@ def exampleBasedReply(chunks):
                 examplelist += examples[u"texts"]
         return examplelist
 
+# リプライの姿勢
 def generateReply(replytext):
         # チャンキング結果から用例を検索
         replylist = exampleBasedReply(capi.getChunks(replytext))
@@ -41,7 +42,7 @@ def generateReply(replytext):
                 replylist += generateMarkovReply(replytext)
 
         if len(replylist) == 0: # 返答文が作れなかった
-                replylist = [u"分からないぞ？",u"もう一回"] # 辞書読み込む
+                replylist = [u"分からないぞ？",u"もう一回"] # 辞書読み込む or ~って何?
                 reply = random.choice(replylist)
         else:
                 reply = choiceReply(replylist)

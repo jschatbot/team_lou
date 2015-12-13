@@ -3,16 +3,19 @@ import json
 import time
 import random
 import sys
+sys.path.append('../')
+from chatapi import *
 
-file = "data.json"
+nowtime = str(time.localtime().tm_hour)
+
+#この一文をデプロイ前に消すこと
+nowtime = "15"
+
+API = ChatbotAPI()
+file = "grade"+str(API.grade)+".json"
 f = open(file)
 data = json.load(f)
 f.close()
-
-nowtime = str(time.localtime().tm_sec)
-
-#この一文をデプロイ前に消すこと
-nowtime = "6"
 
 if nowtime not in data["time"]:
     sys.exit()
@@ -27,5 +30,6 @@ while memo != tweet:
         word = [m for m in data["mark"][i]]
         tweet = tweet.replace(mk, random.choice(word))
 
-print tweet 
+
+API.postTweet(tweet)
 
