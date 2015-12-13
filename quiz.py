@@ -3,9 +3,7 @@
 import chatapi
 import random
 
-#capi = chatapi.ChatbotAPI()
-class capi:
-    grade = 1
+capi = chatapi.ChatbotAPI()
 
 quizfilename = "Quiz/quiz{}.txt"
 quizUsers = {} # quiz active user - problem number
