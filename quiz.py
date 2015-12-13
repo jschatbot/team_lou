@@ -35,7 +35,7 @@ def is_surrender(mension):
 
 def generateAnswerMessage(answerword,is_collect=True):
     skeleton = u"アンサーは {} でした！" # 辞書を作る？
-    tweet = skeleton.format(answord)
+    tweet = skeleton.format(answerword)
     if is_collect:
         tweet += u"コングラッチュレーショーン！！"
     else:
@@ -72,6 +72,6 @@ def quiz(state,number=-1,mension=""):
     print tweet
     return tweet
 
-#quiz(1,)
-#quiz(2,2,u"答えは三角")
-#quiz(2,3,u"答えはパンジー")
+quiz(1,)
+quiz(2,2,u"答えは三角")
+quiz(2,3,u"答えはパンジー")
