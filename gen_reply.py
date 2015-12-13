@@ -2,13 +2,26 @@
 
 import chatapi
 import random
+import twitter_lm
 
 capi = chatapi.ChatbotAPI()
+lm = twitter_lm.twitter_lm()
 th_num = 100 # 候補数がいくつ以下ならマルコフ連鎖を考えるか
 
-# 言語モデルか何かで応答文を評価
+# 言語モデルで応答文を評価
 def choiceReply(replylist):
-        return random.choice(replylist)
+        ans = ("", -10000)
+        for line in replylist:
+            morphs = capi.getMorphs(line)
+            tok_line = ""
+            for morph in morphs:
+                if morph["surface"] != "BOS" and morph["surface"] != "EOS":
+                    tok_line += morph["surface"] + " "
+            score = lm.calc_score(tok_line)
+            if score > ans[1]:
+                ans = (line, lm.calc_score(tok_line))
+
+        return ans[0]
 
 # マルコフ連鎖で応答文を生成
 def generateMarkovReply(replytext):
