@@ -31,8 +31,8 @@ class ChatbotAPI:
 			self.apiBase = "http://10.243.251.70"
 			self.authData = None
                         self.isLocal = False
-		#self.botName = "js_tsubot01"
-		self.botName = "js_devbot01"
+		self.botName = "js_tsubot01"
+		#self.botName = "js_devbot01"
 		
 		self.getReply()
 
@@ -44,6 +44,7 @@ class ChatbotAPI:
 		else:
 			rawRes = req.get(url, params=data, verify=False, auth=self.authData, headers=headers)
 		if rawRes.status_code / 10 != 20:
+			print url
 			print "Error: status code " + str(rawRes.status_code)
 			return False
 		try:

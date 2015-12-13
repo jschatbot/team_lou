@@ -9,7 +9,7 @@ import quiz
 import re
 
 class Chatbot:
-	tickInterval = 1.0;
+	tickInterval = 60;
 	def __init__(self):
 		self.capi = ChatbotAPI()
 		print "current grade: " + str(self.capi.grade)
@@ -35,6 +35,8 @@ class Chatbot:
 		self.localDB = shelve.open('./louDB', writeback=True)
 
 	def tick(self):
+		self.capi.getReply()
+		#
 		self.timer = threading.Timer(self.tickInterval, self.tick);
 		self.timer.start()
 
