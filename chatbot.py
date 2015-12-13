@@ -1,65 +1,52 @@
 # -*- coding: utf-8 -*-
 
-import codecs, sys
-import requests as req
-from requests.auth import HTTPBasicAuth
-import re, pprint
-import keys 
+from chatapi import *
+import threading
+import shelve
 
-def pp(obj):
-	pp = pprint.PrettyPrinter(indent=4, width=160)
-	str = pp.pformat(obj)
-	return re.sub(r"\\u([0-9a-f]{4})", lambda x: unichr(int("0x"+x.group(1), 16)), str)
-
-req.packages.urllib3.disable_warnings()
-sys.stdout = codecs.getwriter('utf_8')(sys.stdout)
-
-class ChatbotAPI:
+class Chatbot:
+	tickInterval = 1.0;
 	def __init__(self):
-		#self.botName = "js_tsubot01";
-		self.botName = "js_devbot01";
-		self.apiBase = "https://52.68.75.108";
-		self.authData= HTTPBasicAuth(keys.apiUser, keys.apiPass)
+		self.capi = ChatbotAPI()
+		self.grade = 0
+		self.localDB = shelve.open('./louDB', writeback=True)
+		if not ("lastMentionID" in self.localDB) :
+			self.localDB["lastMentionID"] = 0;
+		print "lastMentionID:" + str(self.localDB["lastMentionID"])
+		self.timer = threading.Timer(self.tickInterval, self.tick);
+		self.timer.start()
+	
+	def dbSave(self):
+		self.localDB.close()
+		self.localDB = shelve.open('./louDB', writeback=True)
 
-	def getSentence(self, str):
-		url = self.apiBase + "/jmat/sentence";
-		data = {'query':str}
-		return (req.get(url, params=data, verify=False, auth=self.authData).json())["sentences"]
+	def tick(self):
+		res = self.capi.getReply()
+		if res :
+			self.grade = res["grade"];
+			p = 0
+			if "replies" in res :
+				r = res["replies"]
+				for i in range(len(r)) :
+					if r[i]["mention_id"] == self.localDB["lastMentionID"] :
+						p = i + 1
+						break
+				for i in range(p, len(r)) :
+					self.receiveMention(r[i]["text"], r[i]["mention_id"], r[i]["user_name"])
+					self.localDB["lastMentionID"] = r[i]["mention_id"];
+				self.dbSave()
+		#print pp(res);
+		#
+		self.timer = threading.Timer(self.tickInterval, self.tick);
+		self.timer.start()
 
-	def getMorphs(self, str):
-		url = self.apiBase + "/jmat/morph";	
-		data = {'query':str}
-		return (req.get(url, params=data, verify=False, auth=self.authData).json())["morphs"]
+	def receiveMention(self, text, mentionID, userName):
+		print "**** Receive new"
+		print text
+		print mentionID
+		print userName
+		self.capi.postTweet(self.capi.convMorphsToStr(self.capi.generateMarkov()))
+		
 
-	def getChunks(self, str):	
-		url = self.apiBase + "/jmat/chunk";	
-		data = {'query':str}
-		return (req.get(url, params=data, verify=False, auth=self.authData).json())["chunks"]
-
-	def getSynonym(self, str):
-		url = self.apiBase + "/jmat/synonym";	
-		data = {'query':str}
-		return (req.get(url, params=data, verify=False, auth=self.authData).json())["groups"]
-
-	def getReply(self):
-		url = self.apiBase + "/tweet/get_reply";	
-		data = {'bot_name':self.botName}
-		rawRes = req.get(url, params=data, verify=False, auth=self.authData);
-		try:
-			res = rawRes.json();
-		except:
-			print(rawRes.text);
-			return False;
-		if "replies" in res:
-			return res;
-		else:
-			pp(res);
-			return False;
-
-capi = ChatbotAPI()
-
-res = capi.getReply();
-print pp(res);
-print keys.a
-
+loubot = Chatbot()
 
