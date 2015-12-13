@@ -43,15 +43,17 @@ class Chatbot:
 		for i in range(1, len(morphs) - 1):
 			if morphs[i]["surface"] in self.louDict:
                                 # 段階にあわせてルー語割合を変える
-                                #if random.randrange(1,3) >= self.capi.grade:
-                                        #text += self.louDict[morphs[i]["surface"]]
-                                text += self.louDict[morphs[i]["surface"]]
+                                if random.randrange(1,3) >= self.capi.grade:
+                                        text += self.louDict[morphs[i]["surface"]]
 			else:
 				text += morphs[i]["surface"]
 		return text
 
 	def convToTsuboLang(self, str):
-		morphs = self.capi.getMorphs(str)
+                text = str
+                text = re.sub("!！", "つぼ！", text)
+                text = re.sub("?？", "つぼ？", text)
+                text = re.sub(".。", "つぼ", text)
 		return text
 
 	def readDict(self):
@@ -72,7 +74,10 @@ class Chatbot:
 		elif quiz.is_quiz(text,userName): # quiz中/開始中
 			self.capi.postReply(quiz.quiz(text,userName), mensionID, userName)
 		else: # 返答生成
-			self.capi.postReply(self.convToLouLang(gen_reply.generateReply(text)), mentionID, userName)
+                        if self.capi.grade == 0:
+                            self.capi.postReply(self.convToTsuboLang(gen_reply.generateReply(text)), mentionID, userName)
+                        else:
+                            self.capi.postReply(self.convToLouLang(gen_reply.generateReply(text)), mentionID, userName)
 
 if __name__ == '__main__':
 	loubot = Chatbot()
