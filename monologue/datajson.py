@@ -3,16 +3,19 @@ import json
 import time
 import random
 import sys
-
-file = "data.json"
-f = open(file)
-data = json.load(f)
-f.close()
+sys.path.append('../')
+from chatapi import *
 
 nowtime = str(time.localtime().tm_sec)
 
 #この一文をデプロイ前に消すこと
-nowtime = "6"
+nowtime = "15"
+
+API = ChatbotAPI()
+file = "grade"+str(API.grade)+".json"
+f = open(file)
+data = json.load(f)
+f.close()
 
 if nowtime not in data["time"]:
     sys.exit()
