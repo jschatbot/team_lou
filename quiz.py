@@ -3,7 +3,9 @@
 import chatapi
 import random
 
-capi = chatapi.ChatbotAPI()
+#capi = chatapi.ChatbotAPI()
+class capi:
+    grade = 1
 
 quizfilename = "Quiz/quiz{}.txt"
 quizUsers = {} # quiz active user - problem number
@@ -78,16 +80,16 @@ def genQuizMessage(userName,number=-1,mension=""):
         if is_surrender(mension): # 降参された場合
             tweet = generateAnswerMessage(answer,False)
             del quizUsers[userName]
-        if is_collect(answer,mension): # 正解がmension中にあればOK
+        elif is_collect(answer,mension): # 正解がmension中にあればOK
             tweet = generateAnswerMessage(answer)
             del quizUsers[userName]
         else:
             tweet = generateMistakeMessage()
-#    print tweet
+    print tweet
     return tweet
 
 def quiz(text,userName):
-    print text
+    print text,userName,quizUsers
     if userName in quizUsers: # プレイ中
         genQuizMessage(userName,quizUsers[userName],text)
     else: # これからプレイ
