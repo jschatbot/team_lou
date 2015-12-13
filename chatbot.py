@@ -48,12 +48,12 @@ class Chatbot:
 				text += morphs[i]["surface"]
 		return text
 
-        def readDict(self):
-                self.greetings = []
-                with open("greetings.txt","r") as greetingfile: # self.capi.gradeで読む辞書を分岐 # for つぼ
-                        for greeting in greetingfile:
-                                g = greeting.rstrip().split()
-                                self.greetings[g[0]] = g[1]
+	def readDict(self):
+		self.greetings = {}
+		with open("greetings.txt","r") as greetingfile: # self.capi.gradeで読む辞書を分岐 # for つぼ
+			for greeting in greetingfile:
+				g = greeting.rstrip().split()
+				self.greetings[g[0]] = g[1]
 
 	def receiveMention(self, text, mentionID, userName):
 		print "**** Receive new"
@@ -62,11 +62,11 @@ class Chatbot:
 		print userName
 
 		if text in self.greetings: # テンプレート返答
-                        self.capi.postReply(self.greetings[text], mentionID, userName)
-                elif quiz.is_quiz(text,userName): # quiz中/開始中
-                        self.capi.postReply(quiz.quiz(text,userName), mensionID, userName)
-                else: # 返答生成
-                        self.capi.postReply(self.convToLouLang(gen_reply.generateReply(text)), mentionID, userName)
+			self.capi.postReply(self.greetings[text], mentionID, userName)
+		elif quiz.is_quiz(text,userName): # quiz中/開始中
+			self.capi.postReply(quiz.quiz(text,userName), mensionID, userName)
+		else: # 返答生成
+			self.capi.postReply(self.convToLouLang(gen_reply.generateReply(text)), mentionID, userName)
 
 if __name__ == '__main__':
 	loubot = Chatbot()
