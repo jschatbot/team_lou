@@ -51,9 +51,14 @@ class Chatbot:
 
 	def convToTsuboLang(self, str):
                 text = str
-                text = re.sub("!！", "つぼ！", text)
-                text = re.sub("?？", "つぼ？", text)
-                text = re.sub(".。", "つぼ", text)
+                text = text.replace(u"!", u"つぼ！")
+                text = text.replace(u"！", u"つぼ！")
+                text = text.replace(u"?", u"つぼ？")
+                text = text.replace(u"？", u"つぼ？")
+                text = text.replace(u"．", u"つぼ")
+                text = text.replace(u"。", u"つぼ")
+                text = text.replace(u".", u"つぼ")
+                text += u"つぼ"
 		return text
 
 	def readDict(self):
