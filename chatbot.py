@@ -6,6 +6,7 @@ import shelve
 from twapi import *
 import gen_reply
 import quiz
+import re
 
 class Chatbot:
 	tickInterval = 1.0;
@@ -21,7 +22,7 @@ class Chatbot:
 		self.louDict = {}
 		with open("./lou_dict/dic_dif.csv", 'r') as louDictFile:
 			for line in louDictFile:
-				sp = line.rstrip('\n').split(',')
+				sp = line.decode('utf-8').rstrip('\n').split(',')
 				self.louDict[sp[0]] = sp[4]
 		#
                 self.readDict()
@@ -47,6 +48,10 @@ class Chatbot:
                                 text += self.louDict[morphs[i]["surface"]]
 			else:
 				text += morphs[i]["surface"]
+		return text
+
+	def convToTsuboLang(self, str):
+		morphs = self.capi.getMorphs(str)
 		return text
 
 	def readDict(self):
