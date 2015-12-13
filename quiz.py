@@ -6,6 +6,7 @@ import random
 capi = chatapi.ChatbotAPI()
 
 quizfilename = "Quiz/quiz{}.txt"
+quizUsers = {}
 
 # read quiz file
 # "question - answerword"
@@ -53,11 +54,11 @@ def is_collect(answer,mension):
     return False
 
 def is_quiz(text,userName):
-    keywords = [u"クイズ", u"なぞなぞ", u"問題"]
+    keywords = [u"クイズ", u"なぞなぞ", u"問題", u"ゲーム"]
     for keyword in keywords:
         if keyword in text:
             return True
-    if userName in quizUsers:
+    if userName in quizUsers.keys:
         return True
     return False
 
@@ -65,26 +66,31 @@ def is_quiz(text,userName):
 # state - state number 0~2
 # number - the question number
 # mension - user mension text
-def genQuizMessage(number=-1,mension=""):
+def genQuizMessage(userName,number=-1,mension=""):
     tweet = u""
     state += 1 # need???
     if number == -1:
         number, tweet = readQuestion(state)
+        global quizUsers
+        quizUsers[userName] = number
     else:
         answer = readAnswer(capi.grade,number)
         if is_surrender(mension): # 降参された場合
             tweet = generateAnswerMessage(answer,False)
         if is_collect(answer,mension): # 正解がmension中にあればOK
             tweet = generateAnswerMessage(answer)
+            del quizUsers[userName]
         else:
             tweet = generateMistakeMessage()
 #    print tweet
     return tweet
 
-def quiz():
+def quiz(text,userName):
+    if userName in quizUsers: # プレイ中
+        genQuizMessage(userName,quizUsers[userName],text)
+    else: # これからプレイ
+        genQuizMessage(userName)
 
-    return genQuizMessage()
-
-#genQuizMessage(1,)
-#genQuizMessage(2,2,u"答えは三角")
-#genQuizMessage(2,3,u"答えはパンジー")
+#genQuizMessage("")
+#genQuizMessage("",2,u"答えは三角")
+#genQuizMessage("",3,u"答えはパンジー")
