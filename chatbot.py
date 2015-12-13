@@ -69,7 +69,7 @@ class Chatbot:
                 # change first person
                 for line in self.firstPerson:
                     text = text.replace(line, u"つぼ")
-                
+
 		return text
 
 	def readDict(self):
@@ -89,9 +89,9 @@ class Chatbot:
 		if text in self.greetings: # テンプレート返答
 			print "01"
 			self.capi.postReply(self.greetings[text], mentionID, userName)
-		#elif quiz.is_quiz(text,userName): # quiz中/開始中
-		#	print "02"
-	#		self.capi.postReply(quiz.quiz(text,userName), mentionID, userName)
+		elif quiz.is_quiz(text,userName): # quiz中/開始中
+			print "02"
+			self.capi.postReply(quiz.quiz(text,userName), mentionID, userName)
 		else: # 返答生成
 			if self.capi.grade == 0:
 				print "03"

@@ -58,7 +58,7 @@ def is_quiz(text,userName):
     for keyword in keywords:
         if keyword in text:
             return True
-    if userName in quizUsers.keys:
+    if userName in quizUsers.keys():
         return True
     return False
 
