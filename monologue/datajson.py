@@ -12,15 +12,12 @@ f.close()
 nowtime = str(time.localtime().tm_sec)
 
 #この一文をデプロイ前に消すこと
-nowtime = "15"
+nowtime = "6"
 
-if nowtime not in data["begin"]:
+if nowtime not in data["time"]:
     sys.exit()
 
-tweet = random.choice(data["begin"][nowtime])
-
-if nowtime in data["end"]:
-    tweet += random.choice(data["end"][nowtime])
+tweet = random.choice(data["time"][nowtime])
 
 memo = ""
 while memo != tweet:
