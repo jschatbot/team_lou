@@ -23,8 +23,10 @@ class ChatbotAPI:
 	def __init__(self):
 		#self.botName = "js_tsubot01"
 		self.botName = "js_devbot01"
-		self.apiBase = "https://52.68.75.108"
+		#self.apiBase = "https://52.68.75.108"
+		self.apiBase = "http://10.243.251.70"
 		self.authData= HTTPBasicAuth(keys.apiUser, keys.apiPass)
+                #self.authData = None
 		self.getReply()
 
 	def __postRequest(self, endp, data, key = None, isPost = False):
@@ -67,9 +69,10 @@ class ChatbotAPI:
 
 	def getReply(self):
 		retv = self.__postRequest("/tweet/get_reply", {'bot_name':self.botName})
+                print pp(retv)
 		if "grade" in retv:
-			self.grade = retv["grade"]
-		return self.__postRequest("/tweet/get_reply", {'bot_name':self.botName})
+		    self.grade = retv["grade"]
+		return retv
 
 	def searchTweet(self, str, limit=10):
 		return self.__postRequest("/search/tweet", {'query':str, 'limit':limit})
