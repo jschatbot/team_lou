@@ -98,12 +98,12 @@ class ChatbotAPI:
 
 	def postTweet(self, text):
 		twApi.update_status(text)
-		print "Tweeted: " + text.encode('utf-8')
+		print "Tweeted: " + text
 
 	def postReply(self, text, mentionID, userName):
 		text = '@' + userName + " " + text
 		twApi.update_status(status = text, in_reply_to_status_id = mentionID)
-		print "Replied: " + text.encode('utf-8')
+		print "Replied: " + text
 
 	def convMorphsToStr(self, morphs):
 		s = '';

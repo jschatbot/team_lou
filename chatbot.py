@@ -26,7 +26,7 @@ class Chatbot:
 				self.louDict[sp[0]] = sp[4]
 		#
                 self.readDict()
-                self.firstPerson = open("./first_person.txt").readlines()
+                self.firstPerson = [ x.decode("utf-8") for x in open("./first_person.txt").readlines() ]
 		self.timer = threading.Timer(self.tickInterval, self.tick);
 		self.timer.start()
 
@@ -56,20 +56,25 @@ class Chatbot:
 		return text
 
 	def convToTsuboLang(self, str):
-                text = str
-                text = text.replace(u"!", u"つぼ！")
-                text = text.replace(u"！", u"つぼ！")
-                text = text.replace(u"?", u"つぼ？")
-                text = text.replace(u"？", u"つぼ？")
-                text = text.replace(u"．", u"つぼ")
-                text = text.replace(u"。", u"つぼ")
-                text = text.replace(u".", u"つぼ")
-                text += u"つぼ"
+		print "fhatejj"
+		text = str
+		text = text.replace(u"!", u"つぼ！")
+		print "aaaaaa"
+		text = text.replace(u"！", u"つぼ！")
+		text = text.replace(u"?", u"つぼ？")
+		text = text.replace(u"？", u"つぼ？")
+		text = text.replace(u"．", u"つぼ")
+		text = text.replace(u"。", u"つぼ")
+		text = text.replace(u".", u"つぼ")
+		text += u"つぼ"
 
-                # change first person
-                for line in self.firstPerson:
-                    text = text.replace(line, u"つぼ")
-                
+		print self.firstPerson
+		print "456"		
+
+		# change first person
+		for line in self.firstPerson:
+			text = text.replace(line, u"つぼ")
+			
 		return text
 
 	def readDict(self):
@@ -95,7 +100,11 @@ class Chatbot:
 		else: # 返答生成
 			if self.capi.grade == 0:
 				print "03"
-				self.capi.postReply(self.convToTsuboLang(gen_reply.generateReply(text)), mentionID, userName)
+				ca = gen_reply.generateReply(text)
+				print "13"
+				cv = self.convToTsuboLang(ca);
+				print "09"
+				self.capi.postReply(cv, mentionID, userName)
 			else:
 				print "04"
 				self.capi.postReply(self.convToLouLang(gen_reply.generateReply(text)), mentionID, userName)
