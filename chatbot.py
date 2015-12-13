@@ -11,6 +11,7 @@ import re
 class Chatbot:
 	tickInterval = 60;
 	def __init__(self):
+		self.aborted = False
 		self.capi = ChatbotAPI()
 		print "current grade: " + str(self.capi.grade)
 		#
@@ -35,6 +36,10 @@ class Chatbot:
 		self.localDB = shelve.open('./louDB', writeback=True)
 
 	def tick(self):
+		if self.aborted:
+			print "Aborted."
+			sys.exit(1)
+
 		self.capi.getReply()
 		#
 		self.timer = threading.Timer(self.tickInterval, self.tick);
@@ -87,6 +92,7 @@ class Chatbot:
 				self.greetings[g[0]] = g[1]
 
 	def receiveMention(self, text, mentionID, userName):
+		raise AssertionError
 		print "**** Receive new"
 		print pp(text)
 		print mentionID
@@ -121,5 +127,5 @@ if __name__ == '__main__':
 		try:
 			stream.userstream()
 		except myExeption() :
-			time.sleep(60)
+			time.sleep(30)
 			stream = tweepy.Stream(auth,StreamListener())
