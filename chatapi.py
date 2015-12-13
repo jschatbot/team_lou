@@ -20,8 +20,7 @@ sys.stdout = codecs.getwriter('utf_8')(sys.stdout)
 
 class ChatbotAPI:
 	grade = 0
-	def __init__(self, isDebugMode):
-		self.isDebugMode = isDebugMode
+	def __init__(self):
 		#self.botName = "js_tsubot01"
 		self.botName = "js_devbot01"
 		self.apiBase = "https://52.68.75.108"
@@ -89,9 +88,12 @@ class ChatbotAPI:
 
 	def postTweet(self, text):
 		twApi.update_status(text)
+		print "Tweeted: " + text
 
 	def postReply(self, text, mentionID, userName):
-		twApi.update_status(status = '@' + userName + " " + text, in_reply_to_status_id = mentionID)
+		text = '@' + userName + " " + text
+		twApi.update_status(status = text, in_reply_to_status_id = mentionID)
+		print "Replied: " + text
 
 	def convMorphsToStr(self, morphs):
 		s = '';
@@ -100,3 +102,6 @@ class ChatbotAPI:
 			t.pop()
 			s += ':'.join(t)
 		return s
+
+	def getMyInfo(self):
+		return twApi.me()

@@ -11,12 +11,15 @@ class StreamListener(tweepy.streaming.StreamListener):
 	def __init__(self, bot):
 		super(StreamListener,self).__init__()
 		self.bot = bot
+		self.userID = self.bot.capi.getMyInfo().id
+		print "Twitter ID: " + str(self.userID)
 
 	def __del__(self):
 		return
 
 	def on_status(self,status):
-		self.bot.receiveMention(status.text, status.id, status.author.name)
+		if status.in_reply_to_user_id == self.userID:
+			self.bot.receiveMention(status.text, status.id, status.author.screen_name)
 		return True
 
 	def on_error(self,status):
