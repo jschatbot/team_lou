@@ -26,6 +26,7 @@ class Chatbot:
 				self.louDict[sp[0]] = sp[4]
 		#
                 self.readDict()
+                self.firstPerson = open("./first_person.txt").readlines()
 		self.timer = threading.Timer(self.tickInterval, self.tick);
 		self.timer.start()
 
@@ -47,6 +48,11 @@ class Chatbot:
                                         text += self.louDict[morphs[i]["surface"]]
 			else:
 				text += morphs[i]["surface"]
+
+                # change first person
+                for line in self.firstPerson:
+                    text = text.replace(line, "ｍｅ")
+
 		return text
 
 	def convToTsuboLang(self, str):
@@ -59,6 +65,11 @@ class Chatbot:
                 text = text.replace(u"。", u"つぼ")
                 text = text.replace(u".", u"つぼ")
                 text += u"つぼ"
+
+                # change first person
+                for line in self.firstPerson:
+                    text = text.replace(line, "つぼ")
+                
 		return text
 
 	def readDict(self):
