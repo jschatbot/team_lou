@@ -18,6 +18,8 @@ class StreamListener(tweepy.streaming.StreamListener):
 		return
 
 	def on_status(self,status):
+		if status.author.id ==self.userID:
+			return True
 		if status.in_reply_to_user_id == self.userID:
 			self.bot.receiveMention(status.text, status.id, status.author.screen_name)
 		return True
