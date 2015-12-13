@@ -3,14 +3,15 @@ import json
 import time
 import random
 import sys
-sys.path.append('../')
+import os
+sys.path.append(os.path.dirname(os.path.abspath(__file__))+'/../')
 from chatapi import *
 
 nowtime = str(time.localtime().tm_hour)
 
 API = ChatbotAPI()
 
-file = "grade"+str(API.grade)+".json"
+file = os.path.dirname(os.path.abspath(__file__))+"/grade"+str(API.grade)+".json"
 f = open(file)
 data = json.load(f)
 f.close()

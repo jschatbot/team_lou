@@ -68,9 +68,8 @@ def is_quiz(text,userName):
 # mention - user mention text
 def genQuizMessage(userName,number=-1,mention=""):
     tweet = u""
-    state = capi.grade + 1 # need???
     if number == -1:
-        number, tweet = readQuestion(state)
+        number, tweet = readQuestion(capi.grade)
         global quizUsers
         quizUsers[userName] = number
     else:
