@@ -27,7 +27,7 @@
 
    →存在感を出す
 
-   </monologue.md>
+   [定時ツイートの詳細](/monologue.md)
 
 ## 実装
 
