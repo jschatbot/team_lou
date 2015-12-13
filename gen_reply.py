@@ -2,10 +2,13 @@
 
 import chatapi
 import random
-import twitter_lm
 
 capi = chatapi.ChatbotAPI()
-lm = twitter_lm.twitter_lm()
+
+if capi.isLocal == False:
+    import twitter_lm
+    lm = twitter_lm.twitter_lm()
+
 th_num = 100 # 候補数がいくつ以下ならマルコフ連鎖を考えるか
 
 # ランダムで応答文を選ぶ
@@ -65,7 +68,7 @@ def generateReply(replytext):
         if len(replylist) == 0: # 返答文が作れなかった
                 replylist = [u"分からないぞ？",u"もう一回"] # 辞書読み込む or ~って何?
                 reply = random.choice(replylist)
-        elif markov_used:
+        elif markov_used and capi.isLocal == False:
                 reply = choiceReply_withLM(replylist)
         else:
                 reply = choiceReply_Random(replylist)

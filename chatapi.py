@@ -25,10 +25,12 @@ class ChatbotAPI:
 			# local
 			self.apiBase = "https://52.68.75.108"
 			self.authData= HTTPBasicAuth(keys.apiUser, keys.apiPass)
+                        self.isLocal = True
 		else:
 			# teamserver
 			self.apiBase = "http://10.243.251.70"
 			self.authData = None
+                        self.isLocal = False
 		#self.botName = "js_tsubot01"
 		self.botName = "js_devbot01"
 		
