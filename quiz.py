@@ -11,8 +11,9 @@ quizfilename = "Quiz/quiz{}.txt"
 # "question - answerword"
 def readQuizFile(state):
     quizlist = []
-    with open(quizfilename.format(state)) as quizfile:
+    with open(quizfilename.format(state),"r") as quizfile:
         for quiz in quizfile:
+            quiz = quiz.decode("utf-8").rstrip()
             quizlist.append(quiz.split(" "))
     return quizlist
 
@@ -34,12 +35,22 @@ def is_surrender(mension):
 
 def generateAnswerMessage(answerword,is_collect=True):
     skeleton = u"アンサーは {} でした！" # 辞書を作る？
-    tweet = skeleton.format(answord)
+    tweet = skeleton.format(answerword)
     if is_collect:
         tweet += u"コングラッチュレーショーン！！"
     else:
         tweet += u"まだまだだねボーイ！！"
     return tweet
+
+def generateMistakeMessage():
+    tweet = u"オーマイガー！考えなおすんだ！" # 辞書を作る？
+    return tweet
+
+# 正解単語が入っていればOK
+def is_collect(answer,mension):
+    if answer in mension:
+        return True
+    return False
 
 # quiz main function
 # state - state number 0~2
@@ -47,7 +58,6 @@ def generateAnswerMessage(answerword,is_collect=True):
 # mension - user mension text
 def quiz(state,number=-1,mension=""):
     tweet = u""
-    print tweet
     state += 1 # need???
     if number == -1:
         number, tweet = readQuestion(state)
@@ -55,11 +65,13 @@ def quiz(state,number=-1,mension=""):
         answer = readAnswer(state,number)
         if is_surrender(mension): # 降参された場合
             tweet = generateAnswerMessage(answer,False)
-        if answer in mension: # 正解がmension中にあればOK
+        if is_collect(answer,mension): # 正解がmension中にあればOK
             tweet = generateAnswerMessage(answer)
+        else:
+            tweet = generateMistakeMessage()
     print tweet
     return tweet
 
-quiz(1,)
-quiz(2,2,"答えは三角")
-quiz(2,2,"答えは三角")
+#quiz(1,)
+#quiz(2,2,u"答えは三角")
+#quiz(2,3,u"答えはパンジー")

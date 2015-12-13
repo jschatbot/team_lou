@@ -6,7 +6,7 @@ import sys
 sys.path.append('../')
 from chatapi import *
 
-nowtime = str(time.localtime().tm_sec)
+nowtime = str(time.localtime().tm_hour)
 
 #この一文をデプロイ前に消すこと
 nowtime = "15"
@@ -30,5 +30,6 @@ while memo != tweet:
         word = [m for m in data["mark"][i]]
         tweet = tweet.replace(mk, random.choice(word))
 
-print tweet 
+
+API.postTweet(tweet)
 
