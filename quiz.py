@@ -27,10 +27,10 @@ def readAnswer(state,number):
     quizlist = readQuizFile(state)
     return quizlist[number][1]
 
-def is_surrender(mension):
+def is_surrender(mention):
     keywords = [u"まいった",u"降参",u"もういい",u"疲れた",u"終わり",u"分から",u"ダメ"]
     for keyword in keywords:
-        if keyword in mension:
+        if keyword in mention:
             return True
     return False
 
@@ -48,8 +48,8 @@ def generateMistakeMessage():
     return tweet
 
 # 正解単語が入っていればOK
-def is_collect(answer,mension):
-    if answer in mension:
+def is_collect(answer,mention):
+    if answer in mention:
         return True
     return False
 
@@ -58,15 +58,15 @@ def is_quiz(text,userName):
     for keyword in keywords:
         if keyword in text:
             return True
-    if userName in quizUsers.keys:
+    if userName in quizUsers.keys():
         return True
     return False
 
 # quiz main function
 # state - state number 0~2
 # number - the question number
-# mension - user mension text
-def genQuizMessage(userName,number=-1,mension=""):
+# mention - user mention text
+def genQuizMessage(userName,number=-1,mention=""):
     tweet = u""
     state = capi.grade + 1 # need???
     if number == -1:
@@ -75,10 +75,10 @@ def genQuizMessage(userName,number=-1,mension=""):
         quizUsers[userName] = number
     else:
         answer = readAnswer(capi.grade,number)
-        if is_surrender(mension): # 降参された場合
+        if is_surrender(mention): # 降参された場合
             tweet = generateAnswerMessage(answer,False)
             del quizUsers[userName]
-        elif is_collect(answer,mension): # 正解がmension中にあればOK
+        elif is_collect(answer,mention): # 正解がmention中にあればOK
             tweet = generateAnswerMessage(answer)
             del quizUsers[userName]
         else:
