@@ -8,8 +8,12 @@ capi = chatapi.ChatbotAPI()
 lm = twitter_lm.twitter_lm()
 th_num = 100 # 候補数がいくつ以下ならマルコフ連鎖を考えるか
 
+# ランダムで応答文を選ぶ
+def choiceReply_Random(replylist):
+        return random.choice(replylist)
+
 # 言語モデルで応答文を評価
-def choiceReply(replylist):
+def choiceReply_withLM(replylist):
         ans = ("", -10000)
         for line in replylist:
             morphs = capi.getMorphs(line)
@@ -31,11 +35,12 @@ def generateMarkovReply(replytext):
         malkovlist = []
         for morph in morphs:
                 if morph[u"pos"] in keypos:
-                        malkovs = capi.generateMarkov(surface=morph[u"surface"], pos=morph[u"pos"])
-                        str = ""
-                        for mal in malkovs:
-                                str += mal.split(":")[0].rstrip('"')
-                        malkovlist.append(str)
+                        for i in range(0, 10):
+                            malkovs = capi.generateMarkov(surface=morph[u"surface"], pos=morph[u"pos"])
+                            str = ""
+                            for mal in malkovs:
+                                    str += mal.split(":")[0].rstrip('"')
+                            malkovlist.append(str.lstrip("BOS").rstrip("EOS"))
         return malkovlist
 
 def exampleBasedReply(chunks):
@@ -48,17 +53,22 @@ def exampleBasedReply(chunks):
 
 # リプライの姿勢
 def generateReply(replytext):
+        markov_used = False
+
         # チャンキング結果から用例を検索
         replylist = exampleBasedReply(capi.getChunks(replytext))
 
         if len(replylist) < th_num:
                 replylist += generateMarkovReply(replytext)
+                markov_used = True 
 
         if len(replylist) == 0: # 返答文が作れなかった
                 replylist = [u"分からないぞ？",u"もう一回"] # 辞書読み込む or ~って何?
                 reply = random.choice(replylist)
+        elif markov_used:
+                reply = choiceReply_withLM(replylist)
         else:
-                reply = choiceReply(replylist)
+                reply = choiceReply_Random(replylist)
 
 #        print reply
         return reply
