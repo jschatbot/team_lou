@@ -77,6 +77,7 @@ def genQuizMessage(userName,number=-1,mension=""):
         answer = readAnswer(capi.grade,number)
         if is_surrender(mension): # 降参された場合
             tweet = generateAnswerMessage(answer,False)
+            del quizUsers[userName]
         if is_collect(answer,mension): # 正解がmension中にあればOK
             tweet = generateAnswerMessage(answer)
             del quizUsers[userName]
@@ -86,11 +87,15 @@ def genQuizMessage(userName,number=-1,mension=""):
     return tweet
 
 def quiz(text,userName):
+    print text
     if userName in quizUsers: # プレイ中
         genQuizMessage(userName,quizUsers[userName],text)
     else: # これからプレイ
         genQuizMessage(userName)
 
-#genQuizMessage("")
-#genQuizMessage("",2,u"答えは三角")
+quiz(u"クイズしようよ",test1)
+quiz(u"問題出してよ",test2)
+quiz(u"それはどうなの",test1)
+quiz(u"降参",test1)
+quiz(u"問題出してよ",test2)
 #genQuizMessage("",3,u"答えはパンジー")
