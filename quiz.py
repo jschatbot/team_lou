@@ -89,9 +89,9 @@ def genQuizMessage(userName,number=-1,mension=""):
 def quiz(text,userName):
     print text,userName,quizUsers
     if userName in quizUsers: # プレイ中
-        genQuizMessage(userName,quizUsers[userName],text)
+        return genQuizMessage(userName,quizUsers[userName],text)
     else: # これからプレイ
-        genQuizMessage(userName)
+        return genQuizMessage(userName)
 
 # quiz(u"クイズしようよ","test1")
 # quiz(u"問題出してよ","test2")

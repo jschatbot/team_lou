@@ -51,7 +51,7 @@ class Chatbot:
 
                 # change first person
                 for line in self.firstPerson:
-                    text = text.replace(line, "ｍｅ")
+                    text = text.replace(line, u"ｍｅ")
 
 		return text
 
@@ -68,7 +68,7 @@ class Chatbot:
 
                 # change first person
                 for line in self.firstPerson:
-                    text = text.replace(line, "つぼ")
+                    text = text.replace(line, u"つぼ")
                 
 		return text
 
@@ -85,15 +85,21 @@ class Chatbot:
 		print mentionID
 		print userName
 
+		print "00"
 		if text in self.greetings: # テンプレート返答
+			print "01"
 			self.capi.postReply(self.greetings[text], mentionID, userName)
-		elif quiz.is_quiz(text,userName): # quiz中/開始中
-			self.capi.postReply(quiz.quiz(text,userName), mensionID, userName)
+		#elif quiz.is_quiz(text,userName): # quiz中/開始中
+		#	print "02"
+	#		self.capi.postReply(quiz.quiz(text,userName), mentionID, userName)
 		else: # 返答生成
-                        if self.capi.grade == 0:
-                            self.capi.postReply(self.convToTsuboLang(gen_reply.generateReply(text)), mentionID, userName)
-                        else:
-                            self.capi.postReply(self.convToLouLang(gen_reply.generateReply(text)), mentionID, userName)
+			if self.capi.grade == 0:
+				print "03"
+				self.capi.postReply(self.convToTsuboLang(gen_reply.generateReply(text)), mentionID, userName)
+			else:
+				print "04"
+				self.capi.postReply(self.convToLouLang(gen_reply.generateReply(text)), mentionID, userName)
+		print "05";
 
 if __name__ == '__main__':
 	loubot = Chatbot()
