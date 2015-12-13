@@ -4,7 +4,10 @@ import codecs, sys
 import requests as req
 from requests.auth import HTTPBasicAuth
 import re, pprint
-import keys 
+import keys
+from twapi import *
+
+# https://github.com/bear/python-twitter
 
 # オブジェクトダンプ日本語対応版
 def pp(obj):
@@ -16,18 +19,25 @@ req.packages.urllib3.disable_warnings()
 sys.stdout = codecs.getwriter('utf_8')(sys.stdout)
 
 class ChatbotAPI:
-	def __init__(self):
+	grade = 0
+	def __init__(self, isDebugMode):
+		self.isDebugMode = isDebugMode
 		#self.botName = "js_tsubot01"
 		self.botName = "js_devbot01"
 		self.apiBase = "https://52.68.75.108"
 		self.authData= HTTPBasicAuth(keys.apiUser, keys.apiPass)
+		self.getReply()
 
 	def __postRequest(self, endp, data, key = None, isPost = False):
 		url = self.apiBase + endp
+		headers = {'Content-type': 'application/json'}
 		if isPost:	
-			rawRes = req.post(url, params=data, verify=False, auth=self.authData)
+			rawRes = req.post(url, params=data, verify=False, auth=self.authData, headers=headers)
 		else:
-			rawRes = req.get(url, params=data, verify=False, auth=self.authData)
+			rawRes = req.get(url, params=data, verify=False, auth=self.authData, headers=headers)
+		if rawRes.status_code / 10 != 20:
+			print "Error: status code " + str(rawRes.status_code)
+			return False
 		try:
 			res = rawRes.json()
 		except:
@@ -57,6 +67,9 @@ class ChatbotAPI:
 		return self.__postRequest("/jmat/synonym", {'query':str}, "groups")
 
 	def getReply(self):
+		retv = self.__postRequest("/tweet/get_reply", {'bot_name':self.botName})
+		if "grade" in retv:
+			self.grade = retv["grade"]
 		return self.__postRequest("/tweet/get_reply", {'bot_name':self.botName})
 
 	def searchTweet(self, str, limit=10):
@@ -75,17 +88,10 @@ class ChatbotAPI:
 		return self.__postRequest("/tk/trigger", {'rule':rulename, 'morphs':morphs})
 
 	def postTweet(self, text):
-		return self.__postRequest("/tweet/simple", {'bot_name':self.botName, 'message':text}, None, True)
+		twApi.update_status(text)
 
 	def postReply(self, text, mentionID, userName):
-		return self.__postRequest('/tweet/send_reply', {
-			'bot_name':self.botName,
-			'replies':[{
-				'mention_id': mentionID,
-				'user_name': userName,
-				'message': text,
-			}]
-		}, None, True)
+		twApi.update_status(status = '@' + userName + " " + text, in_reply_to_status_id = mentionID)
 
 	def convMorphsToStr(self, morphs):
 		s = '';

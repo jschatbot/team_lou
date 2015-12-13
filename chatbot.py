@@ -3,16 +3,30 @@
 from chatapi import *
 import threading
 import shelve
+from twapi import *
 
 class Chatbot:
 	tickInterval = 1.0;
 	def __init__(self):
-		self.capi = ChatbotAPI()
-		self.grade = 0
+		if len(sys.argv) > 1:
+			self.debugMode = sys.argv[1];
+		else:
+			self.debugMode = False
+		#
+		self.capi = ChatbotAPI(self.debugMode)
+		print "current grade: " + str(self.capi.grade)
+		#	
 		self.localDB = shelve.open('./louDB', writeback=True)
 		if not ("lastMentionID" in self.localDB) :
 			self.localDB["lastMentionID"] = 0;
 		print "lastMentionID:" + str(self.localDB["lastMentionID"])
+		#
+		self.louDict = {}
+		with open("./lou_dict/dic_dif.csv", 'r') as louDictFile:
+			for line in louDictFile:
+				sp = line.rstrip('\n').split(',')
+				self.louDict[sp[0]] = sp[4]
+		#
 		self.timer = threading.Timer(self.tickInterval, self.tick);
 		self.timer.start()
 	
@@ -21,32 +35,30 @@ class Chatbot:
 		self.localDB = shelve.open('./louDB', writeback=True)
 
 	def tick(self):
-		res = self.capi.getReply()
-		if res :
-			self.grade = res["grade"];
-			p = 0
-			if "replies" in res :
-				r = res["replies"]
-				for i in range(len(r)) :
-					if r[i]["mention_id"] == self.localDB["lastMentionID"] :
-						p = i + 1
-						break
-				for i in range(p, len(r)) :
-					self.receiveMention(r[i]["text"], r[i]["mention_id"], r[i]["user_name"])
-					self.localDB["lastMentionID"] = r[i]["mention_id"];
-				self.dbSave()
-		#print pp(res);
-		#
+
 		self.timer = threading.Timer(self.tickInterval, self.tick);
 		self.timer.start()
-
+	
+	def convToLouLang(self, chunked):
+		for i in range(0, len(chunked)):
+			if chunked[i] in lou_dict:
+				chunked[i] = lou_dict[chunked[i]],
+	
 	def receiveMention(self, text, mentionID, userName):
 		print "**** Receive new"
-		print text
+		print pp(text)
 		print mentionID
 		print userName
-		self.capi.postTweet(self.capi.convMorphsToStr(self.capi.generateMarkov()))
+		self.capi.postReply(self.capi.convMorphsToStr(self.capi.generateMarkov()), mentionID, userName)
 		
-
-loubot = Chatbot()
-
+if __name__ == '__main__':
+	loubot = Chatbot()
+	auth = get_oauth()
+	stream = tweepy.Stream(auth,StreamListener(loubot))
+	while True :
+		# ストリーミング再接続用ループ
+		try:
+			stream.userstream()
+		except myExeption() :
+			time.sleep(60)
+			stream = tweepy.Stream(auth,StreamListener())
