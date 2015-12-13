@@ -21,12 +21,17 @@ sys.stdout = codecs.getwriter('utf_8')(sys.stdout)
 class ChatbotAPI:
 	grade = 0
 	def __init__(self):
+		if len(sys.argv) > 1:
+			# local
+			self.apiBase = "https://52.68.75.108"
+			self.authData= HTTPBasicAuth(keys.apiUser, keys.apiPass)
+		else:
+			# teamserver
+			self.apiBase = "http://10.243.251.70"
+			self.authData = None
 		#self.botName = "js_tsubot01"
 		self.botName = "js_devbot01"
-		#self.apiBase = "https://52.68.75.108"
-		self.apiBase = "http://10.243.251.70"
-		self.authData= HTTPBasicAuth(keys.apiUser, keys.apiPass)
-                #self.authData = None
+		
 		self.getReply()
 
 	def __postRequest(self, endp, data, key = None, isPost = False):
