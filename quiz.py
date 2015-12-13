@@ -72,6 +72,6 @@ def quiz(state,number=-1,mension=""):
     print tweet
     return tweet
 
-quiz(1,)
-quiz(2,2,u"答えは三角")
-quiz(2,3,u"答えはパンジー")
+#quiz(1,)
+#quiz(2,2,u"答えは三角")
+#quiz(2,3,u"答えはパンジー")
