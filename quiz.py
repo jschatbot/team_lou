@@ -52,26 +52,32 @@ def is_collect(answer,mension):
         return True
     return False
 
+def is_quiz(text,userName):
+    return False
+
 # quiz main function
 # state - state number 0~2
 # number - the question number
 # mension - user mension text
-def quiz(state,number=-1,mension=""):
+def genQuizMessage(number=-1,mension=""):
     tweet = u""
     state += 1 # need???
     if number == -1:
         number, tweet = readQuestion(state)
     else:
-        answer = readAnswer(state,number)
+        answer = readAnswer(capi.grade,number)
         if is_surrender(mension): # 降参された場合
             tweet = generateAnswerMessage(answer,False)
         if is_collect(answer,mension): # 正解がmension中にあればOK
             tweet = generateAnswerMessage(answer)
         else:
             tweet = generateMistakeMessage()
-    print tweet
+#    print tweet
     return tweet
 
-#quiz(1,)
-#quiz(2,2,u"答えは三角")
-#quiz(2,3,u"答えはパンジー")
+def quiz():
+    return genQuizMessage()
+
+#genQuizMessage(1,)
+#genQuizMessage(2,2,u"答えは三角")
+#genQuizMessage(2,3,u"答えはパンジー")
