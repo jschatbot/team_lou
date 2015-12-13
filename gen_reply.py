@@ -4,7 +4,7 @@ import chatapi
 import random
 
 capi = chatapi.ChatbotAPI()
-th_num = 100
+th_num = 100 # 候補数がいくつ以下ならマルコフ連鎖を考えるか
 
 # 言語モデルか何かで応答文を評価
 def choiceReply(replylist):
@@ -18,34 +18,35 @@ def generateMarkovReply(replytext):
         malkovlist = []
         for morph in morphs:
                 if morph[u"pos"] in keypos:
-                        malkovs = capi.generateMarkov(self, surface=morph[u"surface"], pos=morph[u"pos"])
+                        malkovs = capi.generateMarkov(surface=morph[u"surface"], pos=morph[u"pos"])
                         str = ""
                         for mal in malkovs:
-                                str += mal.split(":").rstrip('"')
+                                str += mal.split(":")[-1].rstrip('"')
                         malkovlist.append(str)
         return malkovlist
 
 def exampleBasedReply(chunks):
+        examplelist = []
         for words in chunks:
-                print words.encode("utf-8")
                 norm = words["norm_surface"]
                 examples = capi.searchReply(norm,limit=10) # 10?
-                responselist += examples[u"texts"]
+                examplelist += examples[u"texts"]
+        return examplelist
 
 def generateReply(replytext):
-        chunks = capi.getChunks(replytext)
+        # チャンキング結果から用例を検索
+        replylist = exampleBasedReply(capi.getChunks(replytext))
 
-        replylist = exampleBasedReply(chunks)
-
-        if len(examplelist) < th_num: # いつマルコフ連鎖にするか？
+        if len(replylist) < th_num:
                 replylist += generateMarkovReply(replytext)
 
         if len(replylist) == 0: # 返答文が作れなかった
                 replylist = [u"分からないぞ？",u"もう一回"] # 辞書読み込む
                 reply = random.choice(replylist)
         else:
-                reply = choice_reply(replylist)
+                reply = choiceReply(replylist)
 
+#        print reply
         return reply
 
-exampleBasedReply("こんにちは今日はいい天気ですね。")
+#generateReply("こんにちは今日はいい天気ですね。")
