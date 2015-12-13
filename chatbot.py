@@ -42,8 +42,9 @@ class Chatbot:
 		for i in range(1, len(morphs) - 1):
 			if morphs[i]["surface"] in self.louDict:
                                 # 段階にあわせてルー語割合を変える
-                                if random.randrange(1,3) >= self.capi.grade:
-				        text += self.louDict[morphs[i]["surface"]]
+                                #if random.randrange(1,3) >= self.capi.grade:
+                                        #text += self.louDict[morphs[i]["surface"]]
+                                text += self.louDict[morphs[i]["surface"]]
 			else:
 				text += morphs[i]["surface"]
 		return text
