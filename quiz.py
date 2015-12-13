@@ -6,7 +6,7 @@ import random
 capi = chatapi.ChatbotAPI()
 
 quizfilename = "Quiz/quiz{}.txt"
-quizUsers = {}
+quizUsers = {} # quiz active user - problem number
 
 # read quiz file
 # "question - answerword"
@@ -93,9 +93,8 @@ def quiz(text,userName):
     else: # これからプレイ
         genQuizMessage(userName)
 
-quiz(u"クイズしようよ",test1)
-quiz(u"問題出してよ",test2)
-quiz(u"それはどうなの",test1)
-quiz(u"降参",test1)
-quiz(u"問題出してよ",test2)
-#genQuizMessage("",3,u"答えはパンジー")
+# quiz(u"クイズしようよ","test1")
+# quiz(u"問題出してよ","test2")
+# quiz(u"それはどうなの","test1")
+# quiz(u"降参","test1")
+# quiz(u"問題出してよ","test2")
