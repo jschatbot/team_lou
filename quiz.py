@@ -53,6 +53,12 @@ def is_collect(answer,mension):
     return False
 
 def is_quiz(text,userName):
+    keywords = [u"クイズ", u"なぞなぞ", u"問題"]
+    for keyword in keywords:
+        if keyword in text:
+            return True
+    if userName in quizUsers:
+        return True
     return False
 
 # quiz main function
@@ -76,6 +82,7 @@ def genQuizMessage(number=-1,mension=""):
     return tweet
 
 def quiz():
+
     return genQuizMessage()
 
 #genQuizMessage(1,)
