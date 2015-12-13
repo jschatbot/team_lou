@@ -15,14 +15,18 @@ f.close()
 # デプロイ前にsecをhourに変えること
 #str = data["begin"][str(time.localtime().tm_sec)]
 
-#とりあえず"0"でテスト
-tweet = data["begin"]["0"]
+#"0"をデプロイ前にstr(time.localtime().tm_hour)に変えること
+tweetbegin = [m for m in data["begin"]["0"]]
+tweet = random.choice(tweetbegin)
 
 #if str(time.localtime().tm_hour) in data["end"]:
 #    str += data["end"][str(time.localtime().tm_hour)]
 
+#"0"をデプロイ前にstr(time.localtime().tm_hour)に変えること
 if "0" in data["end"]:
-    tweet += data["end"]["0"]
+    tweetebd = [m for m in data["end"]["0"]]
+    tweet += random.choice(data["end"]["0"])
+    #tweet += data["end"]["0"]
 
 memo = ""
 while memo != tweet:
