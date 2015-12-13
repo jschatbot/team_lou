@@ -9,7 +9,7 @@ if capi.isLocal == False:
     import twitter_lm
     lm = twitter_lm.twitter_lm()
 
-th_num = 100 # 候補数がいくつ以下ならマルコフ連鎖を考えるか
+th_num = 10 # 候補数がいくつ以下ならマルコフ連鎖を考えるか
 
 # ランダムで応答文を選ぶ
 def choiceReply_Random(replylist):
