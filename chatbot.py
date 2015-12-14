@@ -28,7 +28,7 @@ class Chatbot:
 				self.louDict[sp[0]] = sp[4]
 		#
                 self.readDict()
-                self.firstPerson = [ x.decode("utf-8") for x in open("./first_person.txt").readlines() ]
+                self.firstPerson = [ x.decode("utf-8").rstrip('\n') for x in open("./first_person.txt").readlines() ]
 		self.timer = threading.Timer(self.tickInterval, self.tick);
 		self.timer.start()
 
