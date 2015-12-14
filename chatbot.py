@@ -7,6 +7,7 @@ from twapi import *
 import gen_reply
 import quiz
 import re
+import random
 
 class Chatbot:
 	tickInterval = 60;
@@ -53,10 +54,11 @@ class Chatbot:
 		for i in range(1, len(morphs) - 1):
 			if morphs[i]["surface"] in self.louDict:
                                 # 段階にあわせてルー語割合を変える
-                                if random.randrange(1,3) >= self.capi.grade:
+                                if random.randrange(1,4) <= self.capi.grade:
                                         text += self.louDict[morphs[i]["surface"]]
 			else:
-				text += morphs[i]["surface"]
+                                if morphs[i]["surface"] != "BOS":
+				        text += morphs[i]["surface"]
                 print "158"
                 # change first person
                 for line in self.firstPerson:
