@@ -23,8 +23,10 @@ class StreamListener(tweepy.streaming.StreamListener):
 				return True
 			if status.in_reply_to_user_id == self.userID:
 				self.bot.receiveMention(status.text, status.id, status.author.screen_name)
-		except:
+		except Exception as e:
 			print "Exception catched."
+                        print str(type(e))
+                        print e.message
 			self.bot.aborted = True
 			sys.exit(1)
 

@@ -46,8 +46,10 @@ class Chatbot:
 		self.timer.start()
 
 	def convToLouLang(self, str):
+                print "352"
 		morphs = self.capi.getMorphs(str);
-		text = ""
+		text = u""
+                print "264"
 		for i in range(1, len(morphs) - 1):
 			if morphs[i]["surface"] in self.louDict:
                                 # 段階にあわせてルー語割合を変える
@@ -55,7 +57,7 @@ class Chatbot:
                                         text += self.louDict[morphs[i]["surface"]]
 			else:
 				text += morphs[i]["surface"]
-
+                print "158"
                 # change first person
                 for line in self.firstPerson:
                     text = text.replace(line, u"ｍｅ")
@@ -92,7 +94,6 @@ class Chatbot:
 				self.greetings[g[0]] = g[1]
 
 	def receiveMention(self, text, mentionID, userName):
-		raise AssertionError
 		print "**** Receive new"
 		print pp(text)
 		print mentionID
@@ -115,7 +116,11 @@ class Chatbot:
 				self.capi.postReply(cv, mentionID, userName)
 			else:
 				print "04"
-				self.capi.postReply(self.convToLouLang(gen_reply.generateReply(text)), mentionID, userName)
+                                ca = gen_reply.generateReply(text)
+                                print "876"
+                                cv = self.convToLouLang(ca)
+                                print "123"
+				self.capi.postReply(cv, mentionID, userName)
 		print "05";
 
 if __name__ == '__main__':
