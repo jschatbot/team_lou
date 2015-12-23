@@ -32,11 +32,14 @@ class StreamListener(tweepy.streaming.StreamListener):
 
 		return True
 
-	def on_error(self,status):
+	def on_error(self,status):		
 		print "Twitter Streaming error"
+		self.bot.aborted = True
+		sys.exit(1)
 
 	def on_timeout(self):
-		raise myExeption
+		self.bot.aborted = True
+		sys.exit(1)
 
 def get_oauth():
 	consumer_key = keys.twKeys['consumer_key'].encode('utf-8')
